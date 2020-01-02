@@ -68,6 +68,7 @@ router.get('/auth/handler', (req, res, next) => {
     })
     .then(function parseProfileInfo(response) {
       const {
+        accessToken,
         refreshToken,
         guid,
         data,
@@ -91,7 +92,7 @@ router.get('/auth/handler', (req, res, next) => {
         nickname,
         yahooGuid: guid,
         yahooRefreshToken: refreshToken,
-      });
+      }).then((user) => ({ ...user, accessToken }));
     })
     .then(function returnAuthResponse(user) {
       if (user) {

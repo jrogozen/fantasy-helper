@@ -10,7 +10,6 @@ const secureRequest = require('./middleware/generic/secureRequest');
 const useHttpLogger = require('./middleware/generic/httpLogger');
 const setErrorMiddleware = require('./middleware/errors');
 const { ServerError } = require('./utils/errors');
-const { setupAuthStrategies } = require('./auth');
 
 const app = express();
 const isDev = process.env.NODE_ENV !== 'production';
@@ -35,15 +34,6 @@ if (compileClient) {
 setRequestParsers(app);
 secureRequest(app);
 useHttpLogger(app);
-setupAuthStrategies(app);
-
-/* test */
-app.use('/ok', (req, res) => {
-  res.send('ok');
-});
-app.use('/notok', (req, res) => {
-  throw new ServerError('woah a server error', req, res);
-});
 
 /* auth routes */
 app.use('/api/v1/auth/yahoo', yahooAuthApi);
