@@ -40,19 +40,7 @@ class UsersDatabase {
 
         return foundUser;
       });
-
-      // need to figure out what to do for catches here.
-      // they can happen after server already responds, so we can't use middleware chain
   }
-  // addUser(args) {
-  //   const user = new User(args);
-
-  //   return user.encryptPassword()
-  //     .then(() => this.db.collection('users').add({
-  //       email: user.email,
-  //       password: user.password,
-  //     }));
-  // }
 }
 
 module.exports = UsersDatabase;

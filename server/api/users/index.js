@@ -1,6 +1,5 @@
 const axios = require('axios');
 const express = require('express');
-// const passport = require('passport');
 const querystring = require('querystring');
 const log = require('../../utils/log');
 const Database = require('../../database');
@@ -8,26 +7,7 @@ const Database = require('../../database');
 const router = express.Router();
 const logger = log.child({ name: 'users' });
 
-// router.get('/signup',
-//   passport.authenticate('yahoo', { session: false }),
-//   (req, res) => {
-//     res.send({
-//       success: true,
-//       message: 'signup successful',
-//       user: req.user,
-//     });
-//   });
-
-// router.get('/auth/yahoo/callback',
-//   (req, res, next) => {
-//     logger.info({ body: req.body, query: req.query }, 'hit the yahoo callback url');
-//     next();
-//   },
-//   passport.authenticate('yahoo', { failureRedirect: '/login' }),
-//   (req, res) => {
-//     res.redirect('/');
-//   });
-
+// todo: move this to auth folder
 router.get('/signup', (req, res) => {
   const authorizationUrl = 'https://api.login.yahoo.com/oauth2/request_auth';
 
@@ -91,7 +71,6 @@ router.get('/auth/yahoo/callback', (req, res, next) => {
       } = response;
       const {
         email,
-        profileImage,
         firstName,
         lastName,
         nickname,
@@ -99,15 +78,17 @@ router.get('/auth/yahoo/callback', (req, res, next) => {
 
       Database.users.findOrCreate({
         email,
-        profileImage,
         firstName,
         lastName,
         nickname,
-        guid,
-        refreshToken,
+        yahooGuid: guid,
+        yahooRefreshToken: refreshToken,
+      }).then((user) => {
+        res.send({
+          success: true,
+          data: user,
+        });
       });
-
-      res.redirect('/');
     })
     .catch((error) => {
       next(error);
