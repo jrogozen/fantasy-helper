@@ -4,7 +4,7 @@
 
 ## setting up firebase credentials
 
-1 create a new firebase account (free) https://console.firebase.google.com/
+1. create a new firebase account (free) https://console.firebase.google.com/
 2. go to firebase settings -> service accounts -> generate new private key
 3. copy private key over to tools/accounts/firebase.json
 
