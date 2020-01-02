@@ -3,6 +3,7 @@ const express = require('express');
 // must be first
 require('../tools/utils/loadEnv');
 const log = require('./utils/log');
+const yahooAuthApi = require('./auth/yahoo');
 const userApi = require('./api/users');
 const setRequestParsers = require('./middleware/generic/requestParsers');
 const secureRequest = require('./middleware/generic/secureRequest');
@@ -43,6 +44,9 @@ app.use('/ok', (req, res) => {
 app.use('/notok', (req, res) => {
   throw new ServerError('woah a server error', req, res);
 });
+
+/* auth routes */
+app.use('/api/v1/auth/yahoo', yahooAuthApi);
 
 /* routes */
 app.use('/api/v1/users', userApi);

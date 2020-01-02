@@ -15,6 +15,6 @@ module.exports = {
     SERVICE_ACCOUNT_PATH: serviceAccountPath,
     YAHOO_CLIENT_ID: 'changeme',
     YAHOO_CLIENT_SECRET: 'changeme',
-    SESSION_SECRET: 'changeme',
+    YAHOO_REDIRECT_URI: 'changeme',
   },
 };

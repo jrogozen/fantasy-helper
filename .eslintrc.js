@@ -23,6 +23,7 @@ module.exports = {
     'react',
   ],
   rules: {
-    "indent": ["error", 2]
+    "indent": ["error", 2],
+    "prefer-arrow-callback": ["error", { "allowNamedFunctions": true }],
   },
 };
