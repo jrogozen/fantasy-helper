@@ -19,6 +19,41 @@ YAHOO_CLIENT_ID=
 YAHOO_CLIENT_SECRET=
 ```
 
+## deploying the server as a firebase function
+
+app assets will be copied over to the `functions` folder and then uploaded to gcloud and hosted via a function url
+
+1. `npm i -g firebase-tools`
+2. `npm run deploy`
+3. open web browser to `{function_url}/check`
+
+## modifying env variables
+
+### using .js config files
+
+in `tools/environments/` there are default env settings for local and production environments. you may modify these and access them via `process.env.{setting_name}` within the application.
+
+### using .env file
+
+you can create a .env file in the project root and define environment variables there
+
+### production env variables
+
+you may add production env variables by using the firebase tools cli
+
+`firebase functions:config:set {setting_name}={setting_value}`
+
+note that you should make sure that the setting name is also available in either the .env or .js config files for local builds to work
+
+### env variable ordering
+
+ordered from lowest to highest precedence
+
+1. *.js config
+2. .env file
+3. process.env
+4. firebase function env (prod only)
+
 ## connecting to yahoo oauth
 
 yahoo requires https connections for oauth2.0
