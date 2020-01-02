@@ -39,7 +39,7 @@ yahoo requires https connections for oauth2.0
 1. `npm run deploy` will upload the express app as a firebase cloud function
 2. grab the deployed function url and add the YAHOO_REDIRECT_URI in `tools/environments/production.js` as `{function_url}/widgets/api/v1/auth/yahoo/handler`
 3. add yahoo client id and client secret as function env variables
-  a. `firebase functions:config:set yahoo.client_secret={secret}`
-  b. `firebase functions:config:set yahoo.client_id={id}`
+  - `firebase functions:config:set yahoo.client_secret={secret}`
+  - `firebase functions:config:set yahoo.client_id={id}`
 4. `npm run deploy`
 5. open web browser to sign in route `${function_url}/api/v1/auth/yahoo/signin`
