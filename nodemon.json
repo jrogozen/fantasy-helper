@@ -1,0 +1,9 @@
+{
+  "ignore": [
+    "*.test.js",
+    "client",
+    "dist",
+    "logs",
+    "package.json"
+  ]
+}
