@@ -73,12 +73,12 @@ class LogFactory {
     }
 
     if (this.children[bindings.name]) {
-      this.pino.debug(`returning existing child logger with name=${bindings.name}`);
+      this.pino.trace(`returning existing child logger with name=${bindings.name}`);
 
       return this.children[bindings.name];
     }
 
-    this.pino.debug(`creating pino child logger with name=${bindings.name}`);
+    this.pino.trace(`creating pino child logger with name=${bindings.name}`);
 
     const logger = this.pino.child(bindings);
 

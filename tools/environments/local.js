@@ -6,7 +6,7 @@ const local = merge(base, {
 
   },
   run: {
-
+    YAHOO_REDIRECT_URI: 'https://us-central1-fantasyhelper-1b460.cloudfunctions.net/widgets/api/v1/auth/yahoo/handler',
   },
 });
 

@@ -1,6 +1,6 @@
 const User = require('./models/user');
-const { DatabaseError } = require('../utils/errors');
 const log = require('../utils/log');
+const { DatabaseError } = require('../utils/errors');
 
 const logger = log.child({ name: 'database' });
 
@@ -9,7 +9,7 @@ class UsersDatabase {
     this.db = db;
   }
 
-  findOrCreate(data) {
+  findOrCreate(data, onlyFind = false) {
     const user = new User(data);
 
     if (!user.yahooGuid) {
@@ -22,7 +22,7 @@ class UsersDatabase {
       .where('yahooGuid', '==', user.yahooGuid)
       .get()
       .then((snapshot) => {
-        if (snapshot.empty) {
+        if (snapshot.empty && !onlyFind) {
           logger.info('no user found with yahooGuid=%s, creating new user', user.yahooGuid);
 
           const definedFields = {
@@ -37,6 +37,12 @@ class UsersDatabase {
             }));
         }
 
+        // user not found and do not create
+        if (snapshot.empty && onlyFind) {
+          return null;
+        }
+
+        // user found, return
         let foundUser;
 
         snapshot.forEach((doc) => {
@@ -45,7 +51,7 @@ class UsersDatabase {
 
         logger.info('found user with yahooGuid=%s, returning data', user.yahooGuid);
 
-        return foundUser;
+        return new User(foundUser);
       });
   }
 }

@@ -7,9 +7,9 @@ const logger = log.child({ name: 'database' });
 class Database {
   constructor() {
     this.db = admin.firestore();
-    logger.debug(this.db, 'initialized');
-
     this.users = new UsersDatabase(this.db);
+
+    logger.debug('initialized db with projectId=%s', this.db._settings.projectId);
   }
 }
 

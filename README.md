@@ -78,3 +78,22 @@ yahoo requires https connections for oauth2.0
   - `firebase functions:config:set yahoo.client_id={id}`
 4. `npm run deploy`
 5. open web browser to sign in route `${function_url}/api/v1/auth/yahoo/signin`
+
+## api
+
+### auth
+
+#### yahooo
+
+- [x] **GET** - /api/v1/auth/yahoo/signin  
+redirects to yahoo sign in page. after verifying permissions, redirects back to our `yahoo_redirect_uri`
+
+- [x] **GET** - /api/v1/auth/yahoo/handler  
+redirect_uri route, trades code in req.query + authorization headers to yahoo api for `access_token`, `refresh_token`, and `xoauth_yahoo_guid`
+
+- [x] **GET** - /api/v1/auth/yahoo/refresh  
+refreshes an `access_token` using `refresh_token`
+
+### users
+
+- [ ] **GET** /api/v1/users/info

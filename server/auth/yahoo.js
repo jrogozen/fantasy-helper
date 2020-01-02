@@ -2,6 +2,7 @@ const axios = require('axios');
 const express = require('express');
 const querystring = require('querystring');
 
+const User = require('../database/models/user');
 const Database = require('../database');
 const yahooUtils = require('../utils/apis/yahoo');
 const log = require('../utils/log');
@@ -103,6 +104,34 @@ router.get('/handler', (req, res, next) => {
       } else {
         throw new ServerError('could not find or create a yahoo user', req, res);
       }
+    })
+    .catch((error) => next(error));
+});
+
+router.get('/refresh', (req, res, next) => {
+  const refreshToken = yahooUtils.getRefreshTokenFromReq(req);
+  const { redirect } = req.query;
+
+  if (!refreshToken) {
+    throw new ServerError('missing refresh token', req, res);
+  }
+
+  const user = new User({ yahooRefreshToken: refreshToken });
+
+  user.getYahooAccessToken()
+    .then((creds) => {
+      yahooUtils.setResponseCookies({ user, accessToken: creds.accessToken, res });
+
+      if (!redirect) {
+        return res.status(200).send({
+          success: true,
+          data: {
+            ...creds,
+          },
+        });
+      }
+
+      return res.redirect(301, redirect);
     })
     .catch((error) => next(error));
 });
