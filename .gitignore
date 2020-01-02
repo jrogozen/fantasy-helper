@@ -4,3 +4,8 @@ logs
 .env
 tools/accounts/*
 **/.DS_STORE
+functions/client/*
+functions/server/*
+functions/shared/*
+functions/tools/*
+functions/.eslintrc.js

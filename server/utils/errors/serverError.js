@@ -1,7 +1,7 @@
 const { ERROR_CODES } = require('../../../shared/utils/errors');
 
 class ServerError extends Error {
-  constructor(message, req, res) {
+  constructor(message, req, res, ...additional) {
     super(message);
 
     if (Error.captureStackTrace) {
@@ -20,6 +20,7 @@ class ServerError extends Error {
         preErrorStatusCode: res.statusCode,
         headers: res.headers,
       },
+      ...additional,
     };
   }
 }

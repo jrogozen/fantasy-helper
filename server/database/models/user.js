@@ -5,6 +5,7 @@ class User {
     this.email = args.email;
     this.firstName = args.firstName;
     this.lastName = args.lastName;
+    this.createdAt = args.createdAt;
 
     this.yahooRefreshToken = args.yahooRefreshToken;
     this.yahooGuid = args.yahooGuid;

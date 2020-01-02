@@ -21,7 +21,7 @@ router.get('/signin', (req, res) => {
   res.redirect(`${yahooUtils.urls.authorization}?${queryParams}`);
 });
 
-router.get('/auth/handler', (req, res, next) => {
+router.get('/handler', (req, res, next) => {
   logger.debug('requesting tokens from yahoo with code=%s', req.query.code);
 
   axios({
@@ -41,19 +41,19 @@ router.get('/auth/handler', (req, res, next) => {
       const { data } = response;
       const {
         access_token,
-        guid,
+        xoauth_yahoo_guid,
         refresh_token,
       } = data;
 
-      log.debug({ guid, access_token, refresh_token }, 'cred response from yahoo');
+      logger.debug({ xoauth_yahoo_guid, access_token, refresh_token }, 'cred response from yahoo');
 
-      if (!access_token || !guid || !refresh_token) {
-        throw new ServerError('failed to get token from yahoo', req, res);
+      if (!access_token || !xoauth_yahoo_guid || !refresh_token) {
+        throw new ServerError('failed to get token from yahoo', req, res, data);
       }
 
       return {
         accessToken: access_token,
-        guid,
+        guid: xoauth_yahoo_guid,
         refreshToken: refresh_token,
       };
     })

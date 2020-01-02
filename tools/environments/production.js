@@ -6,7 +6,8 @@ const production = merge(base, {
 
   },
   run: {
-
+    LOG_LEVEL: 'debug',
+    YAHOO_REDIRECT_URI: 'https://us-central1-fantasyhelper-1b460.cloudfunctions.net/widgets/api/v1/auth/yahoo/handler',
   },
 });
 
