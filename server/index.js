@@ -3,12 +3,13 @@ const express = require('express');
 // must be first
 require('../tools/utils/loadEnv');
 const log = require('./utils/log');
+const userApi = require('./api/users');
 const setRequestParsers = require('./middleware/generic/requestParsers');
 const secureRequest = require('./middleware/generic/secureRequest');
 const useHttpLogger = require('./middleware/generic/httpLogger');
 const setErrorMiddleware = require('./middleware/errors');
-const Database = require('./database');
 const { ServerError } = require('./utils/errors');
+const { setupAuthStrategies } = require('./auth');
 
 const app = express();
 const isDev = process.env.NODE_ENV !== 'production';
@@ -33,8 +34,7 @@ if (compileClient) {
 setRequestParsers(app);
 secureRequest(app);
 useHttpLogger(app);
-
-const db = new Database();
+setupAuthStrategies(app);
 
 /* test */
 app.use('/ok', (req, res) => {
@@ -43,6 +43,9 @@ app.use('/ok', (req, res) => {
 app.use('/notok', (req, res) => {
   throw new ServerError('woah a server error', req, res);
 });
+
+/* routes */
+app.use('/api/v1/users', userApi);
 
 // must be last middleware
 setErrorMiddleware(app);
