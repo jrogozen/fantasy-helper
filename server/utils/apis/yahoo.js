@@ -8,6 +8,7 @@ const urls = {
   userInfo(guid) {
     return `https://social.yahooapis.com/v1/user/${guid}/profile?format=json`;
   },
+  fantasy: 'https://fantasysports.yahooapis.com/fantasy/v2',
 };
 
 function createBasicAuthorizationHeader() {
@@ -25,8 +26,8 @@ function createBearerAuthorizationHeader(token) {
 }
 
 function setResponseCookies({ user, accessToken, res }) {
-  res.cookie('yahoo_access_token', accessToken, { secure: true });
-  res.cookie('yahoo_refresh_token', user.yahooRefreshToken, { secure: true });
+  res.cookie('yahoo_access_token', accessToken, { httpOnly: true });
+  res.cookie('yahoo_refresh_token', user.yahooRefreshToken, { httpOnly: true });
 }
 
 function getRefreshTokenFromReq(req) {
