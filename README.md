@@ -109,3 +109,7 @@ refreshes an `access_token` using `refresh_token`
 - [x] **GET** /api/v1/users/info  
 when requested with a `yahoo_refresh_token` cookie, header, or `yahooRefreshToken` queryParam, returns all user related data.  
 when requested with a `yahooGuid` queryParam, returns public user related data for that user
+
+### resources
+
+- [yahoo oauth documentation](https://developer.yahoo.com/oauth2/guide/)
