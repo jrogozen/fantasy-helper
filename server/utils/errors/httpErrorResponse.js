@@ -18,7 +18,7 @@ function httpErrorResponse(error) {
     extended.response = JSON.stringify(error.response.data);
   }
 
-  if (process.env !== 'production') {
+  if (process.env.NODE_ENV !== 'production') {
     return extended;
   }
 

@@ -30,12 +30,19 @@ function setResponseCookies({ user, accessToken, res }) {
 }
 
 function getRefreshTokenFromReq(req) {
+  logger.debug({
+    headerToken: req.headers.yahoo_refresh_token,
+    cookieToken: req.cookies.yahoo_refresh_token,
+    body: req.body,
+    queryToken: req.query.yahooRefreshToken,
+  }, 'getting refresh token from request');
+
   if (req.headers.yahoo_refresh_token) {
     return req.headers.yahoo_refresh_token;
   }
 
   if (req.cookies.yahoo_refresh_token) {
-    return req.headers.yahoo_refresh_token;
+    return req.cookies.yahoo_refresh_token;
   }
 
   if (req.body.creds && req.body.creds.yahooRefreshToken) {

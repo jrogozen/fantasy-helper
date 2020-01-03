@@ -93,13 +93,18 @@ router.get('/handler', (req, res, next) => {
         nickname,
         yahooGuid: guid,
         yahooRefreshToken: refreshToken,
-      }).then((user) => ({ ...user, accessToken }));
+      }).then((user) => ({ user, creds: { accessToken } }));
     })
-    .then(function returnAuthResponse(user) {
+    .then(function returnAuthResponse({ user, creds }) {
       if (user) {
+        yahooUtils.setResponseCookies({ user, accessToken: creds.accessToken, res });
+
         res.send({
           sucess: true,
-          data: user,
+          data: {
+            user,
+            creds,
+          },
         });
       } else {
         throw new ServerError('could not find or create a yahoo user', req, res);

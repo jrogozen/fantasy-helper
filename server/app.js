@@ -8,6 +8,7 @@ const setRequestParsers = require('./middleware/generic/requestParsers');
 const secureRequest = require('./middleware/generic/secureRequest');
 const useHttpLogger = require('./middleware/generic/httpLogger');
 const setErrorMiddleware = require('./middleware/errors');
+const setRequestId = require('./middleware/generic/requestId');
 
 const app = express();
 const isDev = process.env.NODE_ENV !== 'production';
@@ -30,6 +31,7 @@ if (compileClient) {
 
 setRequestParsers(app);
 secureRequest(app);
+setRequestId(app);
 useHttpLogger(app);
 
 app.use('/check', (req, res) => {

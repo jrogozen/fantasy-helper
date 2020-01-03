@@ -13,6 +13,12 @@ if (process.env.GCLOUD_PROJECT) {
   env = 'production';
 }
 
+if (!process.env.NODE_ENV && env === 'local') {
+  process.env.NODE_ENV = 'development';
+} else {
+  process.env.NODE_ENV = 'production';
+}
+
 const configPath = path.resolve(__dirname, '..', 'environments', `${env}.js`);
 
 const defaults = require(configPath);

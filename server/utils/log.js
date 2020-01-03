@@ -21,6 +21,7 @@ class LogFactory {
   static createBaseLogger() {
     const log = pino({
       name: 'fantasy-helper',
+      env: process.env.NODE_ENV,
       level,
       safe: true,
     }, logThrough);
@@ -34,6 +35,27 @@ class LogFactory {
           'warn', `${logPath}/warn.log`,
           'error', `${logPath}/error.log`,
           'fatal', `${logPath}/fatal.log`,
+        ],
+        { cwd, env: process.env },
+      );
+
+      logThrough.pipe(child.stdin);
+    }
+
+    if (process.env.GCLOUD_PROJECT) {
+      const pinoStackdriverPath = path.resolve(
+        __dirname,
+        '..',
+        '..',
+        'node_modules/pino-stackdriver/src/cli.js',
+      );
+
+      const child = spawn(
+        process.execPath,
+        [
+          require.resolve(pinoStackdriverPath),
+          '-p', process.env.GCLOUD_PROJECT,
+          '-c', process.env.STACKDRIVER_ACCOUNT_PATH,
         ],
         { cwd, env: process.env },
       );

@@ -1,14 +1,22 @@
 # fantasy-helper #
 
 `npm i`
+`npm i -g firebase-tools`
 
-project currently deployed using google firebase @ `https://us-central1-fantasyhelper-1b460.cloudfunctions.net/widgets/`
+project currently deployed using google firebase @ https://us-central1-fantasyhelper-1b460.cloudfunctions.net/widgets/
 
 ## setting up firebase credentials
 
 1. create a new firebase account (free) https://console.firebase.google.com/
 2. go to firebase settings -> service accounts -> generate new private key
-3. copy private key over to tools/accounts/firebase.json
+3. copy private key over to `tools/accounts/firebase.json`
+4. `firebase login`
+
+## setting up google cloud stackdriver credentials
+
+1. create a new stackdriver service account https://console.cloud.google.com/iam-admin/serviceaccounts with stackdriver permissions
+2. generate credentials file and place in `tools/accounts/stackdriver.json`
+4. production logs viewable in google console https://console.cloud.google.com/logs
 
 ## setting up yahoo oauth
 
@@ -21,12 +29,16 @@ YAHOO_CLIENT_ID=
 YAHOO_CLIENT_SECRET=
 ```
 
+## running the project locally
+
+- `npm run dev` to start the server and webpack hot middleware
+- `npm run dev:server-only` to start the server without client webpack compilation
+
 ## deploying the server as a firebase function
 
 app assets will be copied over to the `functions` folder and then uploaded to gcloud and hosted via a function url
 
-1. `npm i -g firebase-tools`
-2. `npm run deploy`
+1. `npm run deploy`
 3. open web browser to `{function_url}/check`
 
 ## modifying env variables
@@ -109,6 +121,20 @@ refreshes an `access_token` using `refresh_token`
 - [x] **GET** /api/v1/users/info  
 when requested with a `yahoo_refresh_token` cookie, header, or `yahooRefreshToken` queryParam, returns all user related data.  
 when requested with a `yahooGuid` queryParam, returns public user related data for that user
+
+### token usage
+
+#### refresh_token
+
+long lived account authentication token. stored in firestore and tied to a single account. when signing in, users will have it saved as a cookie
+
+#### access_token
+
+short lived account authorization token. it is used by yahoo's apis to validate requests. a new one can be generated via an api call + `refresh_token`. if an api call is made with an expired `access_token`, the `refresh_token` will be used to re-authorize the user and the initial api call will be repeated.
+
+### revoking tokens
+
+users may revoke tokens using the yahoo account settings page.
 
 ### resources
 
