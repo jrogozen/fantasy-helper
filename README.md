@@ -130,7 +130,7 @@ long lived account authentication token. stored in firestore and tied to a singl
 
 #### access_token
 
-short lived account authorization token. it is used by yahoo's apis to validate requests. a new one can be generated via an api call + `refresh_token`. if an api call is made with an expired `access_token`, the `refresh_token` will be used to re-authorize the user and the initial api call will be repeated.
+short lived account authorization token. it is used by yahoo's apis to validate requests. a new one can be generated via an api call + `refresh_token`. if an api call is made with an expired `access_token`, the `refresh_token` will be used to re-authorize the user and the initial api call will be repeated. api calls that need to request data from yahoo's api require an `Authorization Bearer {access_token}` header.
 
 ### revoking tokens
 
