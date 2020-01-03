@@ -2,6 +2,8 @@
 
 `npm i`
 
+project currently deployed using google firebase @ `https://us-central1-fantasyhelper-1b460.cloudfunctions.net/widgets/`
+
 ## setting up firebase credentials
 
 1. create a new firebase account (free) https://console.firebase.google.com/
