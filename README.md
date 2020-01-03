@@ -81,11 +81,19 @@ yahoo requires https connections for oauth2.0
 4. `npm run deploy`
 5. open web browser to sign in route `${function_url}/api/v1/auth/yahoo/signin`
 
+## error handling
+
+all express errors are handled at the end of the middleware chain by functions in `server/middlewares/errors`. middleware can throw specific errors at any point before the response has been sent. async errors must be caught and manually passed to the `next` handler. ala `.catch(error => next(error))`
+
+in local development, errors and accompanying information is sent as a json response for bad requests. logger will pretty print errors to the terminal.
+
+in production, minimal error information is sent as a json response. full error details are logged via pino.
+
 ## api
 
 ### auth
 
-#### yahooo
+#### yahoo
 
 - [x] **GET** - /api/v1/auth/yahoo/signin  
 redirects to yahoo sign in page. after verifying permissions, redirects back to our `yahoo_redirect_uri`
@@ -98,4 +106,6 @@ refreshes an `access_token` using `refresh_token`
 
 ### users
 
-- [ ] **GET** /api/v1/users/info
+- [x] **GET** /api/v1/users/info  
+when requested with a `yahoo_refresh_token` cookie, header, or `yahooRefreshToken` queryParam, returns all user related data.  
+when requested with a `yahooGuid` queryParam, returns public user related data for that user

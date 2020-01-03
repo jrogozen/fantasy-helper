@@ -9,6 +9,31 @@ class UsersDatabase {
     this.db = db;
   }
 
+  getCurrentUser({ yahooRefreshToken }) {
+    if (yahooRefreshToken) {
+      const usersRef = this.db.collection('users');
+
+      return usersRef
+        .where('yahooRefreshToken', '==', yahooRefreshToken)
+        .get()
+        .then((snapshot) => {
+          if (snapshot.empty) {
+            return null;
+          }
+
+          let foundUser;
+
+          snapshot.forEach((doc) => {
+            foundUser = doc.data();
+          });
+
+          return new User(foundUser);
+        });
+    }
+
+    throw new DatabaseError('only support getting yahoo users');
+  }
+
   findOrCreate(data, onlyFind = false) {
     const user = new User(data);
 
