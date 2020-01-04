@@ -27,6 +27,17 @@ refreshes an `access_token` using `refresh_token`
 when requested with a `yahoo_refresh_token` cookie, header, or `yahooRefreshToken` queryParam, returns all user related data.  
 when requested with a `yahooGuid` queryParam, returns public user related data for that user
 
+- [x] **GET** /api/v1/users/leagues  
+returns a user's fantasy leagues, organized by **game**. games refer to a sport + season. you can pass any of the yahoo api filter params as query arguments to modify the search.  
+
+  - `?seasons=2018,2019` will return the 2018 and 2019 season leagues for all games  
+  - `?game_keys=nfl` will return only the latest nfl season leagues  
+  - `?game_keys=348,nfl` will return the latest and 2015 season leagues  
+  - `?is_available=1` will only return active leagues  
+
+- [x] **GET** /api/v1/users/teams  
+returns a user's fantasy teams, organized by **game**. by default, teams will be nested under leagues. you may remove this functionality by passing a queryParam `no_leagues=true`. you may use any of the game filter queryParams available in the yahoo api
+
 ## development
 
 `npm i`  
