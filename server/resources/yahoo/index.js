@@ -1,7 +1,6 @@
-const axios = require('axios');
-
-const log = require('../../utils/log');
+const YahooUserApi = require('./yahooUserApi');
 const yahooUtils = require('../../utils/apis/yahoo');
+const log = require('../../utils/log');
 
 const logger = log.child({ name: 'yahooApi' });
 
@@ -11,15 +10,17 @@ const logger = log.child({ name: 'yahooApi' });
   teams = actual teams for a league, query by game_keys
 */
 class YahooApi {
-  constructor(args) {
-    this.accessToken = args.accessToken;
-    this.user = {
-      leagues: this.leagues.bind(this),
-    };
+  constructor({ accessToken }) {
+    this.accessToken = accessToken;
+    this.user = new YahooUserApi(this.accessToken, YahooApi);
   }
 
   static makeRequestUrl(resources = []) {
     const suffix = resources.reduce((acc, resource) => {
+      if (!resource) {
+        return acc;
+      }
+
       if (!resource.filter) {
         acc += `/${resource.name}`;
       } else {
@@ -29,37 +30,11 @@ class YahooApi {
       return acc;
     }, '');
 
-    return `${yahooUtils.urls.fantasy}${suffix}?format=json`;
-  }
+    const requestUrl = `${yahooUtils.urls.fantasy}${suffix}?format=json`;
 
-  // static parseCollection(collection) {
-  // }
+    logger.info('making request to yahoo api=%s', requestUrl);
 
-  leagues({ gameKeys }) {
-    if (!Array.isArray(gameKeys)) {
-      gameKeys = [gameKeys];
-    }
-
-    const url = YahooApi.makeRequestUrl([
-      { name: 'users', filter: 'use_login=1' },
-      { name: 'games', filter: `game_keys=${gameKeys.join(',')}` },
-      { name: 'leagues' },
-    ]);
-
-    return axios({
-      method: 'get',
-      url,
-      headers: {
-        Authorization: yahooUtils.createBearerAuthorizationHeader(this.accessToken),
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    })
-      .then((response) => {
-        const { data } = response;
-        logger.info(data, 'yahoo response');
-
-        return data;
-      });
+    return requestUrl;
   }
 }
 

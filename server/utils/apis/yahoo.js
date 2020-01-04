@@ -57,7 +57,30 @@ function getRefreshTokenFromReq(req) {
   return null;
 }
 
+function createGamesFilter(req) {
+  let gamesFilter = '';
+
+  if (req.query.is_available) {
+    gamesFilter += `is_available=${req.query.is_available};`;
+  }
+
+  if (req.query.game_types) {
+    gamesFilter += `game_types=${req.query.game_types};`;
+  }
+
+  if (req.query.game_keys) {
+    gamesFilter += `game_keys=${req.query.game_keys};`;
+  }
+
+  if (req.query.seasons) {
+    gamesFilter += `seasons=${req.query.seasons};`;
+  }
+
+  return gamesFilter;
+}
+
 module.exports = {
+  createGamesFilter,
   createBasicAuthorizationHeader,
   createBearerAuthorizationHeader,
   getRefreshTokenFromReq,

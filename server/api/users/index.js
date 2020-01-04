@@ -62,13 +62,30 @@ router.get('/info', (req, res, next) => {
 });
 
 // todo: add auth middleware!
-// todo: finish
-router.get('/fantasy', (req, res, next) => {
+router.get('/leagues', (req, res, next) => {
   const yahooApi = new YahooApi({
     accessToken: req.cookies.yahoo_access_token,
   });
 
-  yahooApi.user.leagues({ gameKeys: ['nfl', 'nba'] })
+  const gamesFilter = yahooUtils.createGamesFilter(req);
+
+  yahooApi.user.leagues({ gamesFilter })
+    .then((data) => res.json(data))
+    .catch((error) => next(error));
+});
+
+// todo: add auth middleware!
+router.get('/teams', (req, res, next) => {
+  const yahooApi = new YahooApi({
+    accessToken: req.cookies.yahoo_access_token,
+  });
+
+  const gamesFilter = yahooUtils.createGamesFilter(req);
+
+  yahooApi.user.teams({
+    gamesFilter,
+    noLeagues: req.query.no_leagues,
+  })
     .then((data) => res.json(data))
     .catch((error) => next(error));
 });

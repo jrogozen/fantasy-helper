@@ -26,5 +26,6 @@ module.exports = {
     "indent": ["error", 2],
     "prefer-arrow-callback": ["error", { "allowNamedFunctions": true }],
     "no-param-reassign": [0],
+    "no-plusplus": [0],
   },
 };

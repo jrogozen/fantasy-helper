@@ -29,19 +29,19 @@ when requested with a `yahooGuid` queryParam, returns public user related data f
 
 ## development
 
-`npm i`
+`npm i`  
 `npm i -g firebase-tools`
 
 ### setting up firebase credentials
 
-1. create a new firebase account (free) https://console.firebase.google.com/
+1. create a new firebase account (requires blaze tier) https://console.firebase.google.com/
 2. go to firebase settings -> service accounts -> generate new private key
 3. copy private key over to `tools/accounts/firebase.json`
 4. `firebase login`
 
 ### setting up google cloud stackdriver credentials
 
-1. create a new stackdriver service account https://console.cloud.google.com/iam-admin/serviceaccounts with stackdriver permissions
+1. create a new service account https://console.cloud.google.com/iam-admin/serviceaccounts with stackdriver permissions
 2. generate credentials file and place in `tools/accounts/stackdriver.json`
 4. production logs viewable in google console https://console.cloud.google.com/logs
 
