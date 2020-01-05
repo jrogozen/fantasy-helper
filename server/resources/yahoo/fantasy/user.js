@@ -1,15 +1,15 @@
 const axios = require('axios');
 
-const log = require('../../utils/log');
-const yahooUtils = require('../../utils/apis/yahoo');
+const yahooUtils = require('../../../utils/apis/yahoo');
 
-const logger = log.child({ name: 'yahooApi' });
+// const log = require('../../../utils/log');
+// const logger = log.child({ name: 'yahooApi' });
 
-class YahooUserApi {
+class YahooFantasyUserApi {
   // pass in YahooApi class to get around circular dependency
-  constructor(accessToken, YahooApi) {
+  constructor(accessToken, YahooFantasyApi) {
     this.accessToken = accessToken;
-    this.YahooApi = YahooApi;
+    this.YahooFantasyApi = YahooFantasyApi;
   }
 
   static parseResource(root) {
@@ -76,7 +76,7 @@ class YahooUserApi {
     const user = data.fantasy_content.users[0].user[0];
     const { games } = data.fantasy_content.users[0].user[1];
 
-    const organizedCollection = YahooUserApi.parseResource(games);
+    const organizedCollection = YahooFantasyUserApi.parseResource(games);
 
     return {
       user,
@@ -85,7 +85,7 @@ class YahooUserApi {
   }
 
   leagues({ gamesFilter }) {
-    const url = this.YahooApi.makeRequestUrl([
+    const url = this.YahooFantasyApi.makeRequestUrl([
       { name: 'users', filter: 'use_login=1' },
       { name: 'games', filter: gamesFilter },
       { name: 'leagues' },
@@ -99,14 +99,14 @@ class YahooUserApi {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
     })
-      .then((response) => YahooUserApi.parseUserCollection(response.data))
+      .then((response) => YahooFantasyUserApi.parseUserCollection(response.data))
       .catch((error) => {
         throw yahooUtils.transformYahooResponseErrors(error);
       });
   }
 
   teams({ gamesFilter, noLeagues = false }) {
-    const url = this.YahooApi.makeRequestUrl([
+    const url = this.YahooFantasyApi.makeRequestUrl([
       { name: 'users', filter: 'use_login=1' },
       { name: 'games', filter: gamesFilter },
       noLeagues ? null : { name: 'leagues' },
@@ -121,11 +121,11 @@ class YahooUserApi {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
     })
-      .then((response) => YahooUserApi.parseUserCollection(response.data))
+      .then((response) => YahooFantasyUserApi.parseUserCollection(response.data))
       .catch((error) => {
         throw yahooUtils.transformYahooResponseErrors(error);
       });
   }
 }
 
-module.exports = YahooUserApi;
+module.exports = YahooFantasyUserApi;

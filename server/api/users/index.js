@@ -1,7 +1,7 @@
 const express = require('express');
 
 const Database = require('../../database');
-const YahooApi = require('../../resources/yahoo');
+const YahooFantasyApi = require('../../resources/yahoo/fantasy');
 const yahooUtils = require('../../utils/apis/yahoo');
 const { yahooAuthMiddleware } = require('../../middleware/auth');
 
@@ -64,13 +64,13 @@ router.get('/info', (req, res, next) => {
 
 // todo: add auth middleware!
 router.get('/leagues', yahooAuthMiddleware, (req, res, next) => {
-  const yahooApi = new YahooApi({
+  const yahooFantasyApi = new YahooFantasyApi({
     accessToken: req.cookies.yahoo_access_token,
   });
 
   const gamesFilter = yahooUtils.createGamesFilter(req);
 
-  yahooApi.user.leagues({ gamesFilter })
+  yahooFantasyApi.user.leagues({ gamesFilter })
     .then((data) => res.json({
       success: true,
       data: {
@@ -83,13 +83,13 @@ router.get('/leagues', yahooAuthMiddleware, (req, res, next) => {
 
 // todo: add auth middleware!
 router.get('/teams', yahooAuthMiddleware, (req, res, next) => {
-  const yahooApi = new YahooApi({
+  const yahooFantasyApi = new YahooFantasyApi({
     accessToken: req.cookies.yahoo_access_token,
   });
 
   const gamesFilter = yahooUtils.createGamesFilter(req);
 
-  yahooApi.user.teams({
+  yahooFantasyApi.user.teams({
     gamesFilter,
     noLeagues: req.query.no_leagues,
   })
