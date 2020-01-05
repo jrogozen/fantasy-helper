@@ -3,6 +3,7 @@ const express = require('express');
 const Database = require('../../database');
 const YahooApi = require('../../resources/yahoo');
 const yahooUtils = require('../../utils/apis/yahoo');
+const { yahooAuthMiddleware } = require('../../middleware/auth');
 
 const {
   httpResourceNotFound,
@@ -62,7 +63,7 @@ router.get('/info', (req, res, next) => {
 });
 
 // todo: add auth middleware!
-router.get('/leagues', (req, res, next) => {
+router.get('/leagues', yahooAuthMiddleware, (req, res, next) => {
   const yahooApi = new YahooApi({
     accessToken: req.cookies.yahoo_access_token,
   });
@@ -70,12 +71,18 @@ router.get('/leagues', (req, res, next) => {
   const gamesFilter = yahooUtils.createGamesFilter(req);
 
   yahooApi.user.leagues({ gamesFilter })
-    .then((data) => res.json(data))
+    .then((data) => res.json({
+      success: true,
+      data: {
+        // only return yahoo data for now, but could change
+        yahoo: data,
+      },
+    }))
     .catch((error) => next(error));
 });
 
 // todo: add auth middleware!
-router.get('/teams', (req, res, next) => {
+router.get('/teams', yahooAuthMiddleware, (req, res, next) => {
   const yahooApi = new YahooApi({
     accessToken: req.cookies.yahoo_access_token,
   });
@@ -86,7 +93,13 @@ router.get('/teams', (req, res, next) => {
     gamesFilter,
     noLeagues: req.query.no_leagues,
   })
-    .then((data) => res.json(data))
+    .then((data) => res.json({
+      success: true,
+      data: {
+        // only return yahoo data for now, but could change
+        yahoo: data,
+      },
+    }))
     .catch((error) => next(error));
 });
 

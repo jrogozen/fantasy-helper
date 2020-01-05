@@ -1,7 +1,10 @@
 const handleGenericError = require('./generic');
+const handleAuthError = require('./auth');
 
 function setErrorMiddleware(app) {
-  app.use('*', handleGenericError);
+  app.use('*',
+    handleAuthError,
+    handleGenericError);
 }
 
 module.exports = setErrorMiddleware;

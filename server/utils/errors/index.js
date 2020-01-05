@@ -3,6 +3,8 @@ const httpResourceNotFound = require('./httpResourceNotFound');
 const DatabaseError = require('./databaseError');
 const ServerError = require('./serverError');
 const LogError = require('./log');
+const YahooMissingTokenError = require('./yahooMissingTokenError');
+const YahooInvalidTokenError = require('./yahooInvalidTokenError');
 
 module.exports = {
   LogError,
@@ -10,4 +12,6 @@ module.exports = {
   httpResourceNotFound,
   DatabaseError,
   ServerError,
+  YahooMissingTokenError,
+  YahooInvalidTokenError,
 };

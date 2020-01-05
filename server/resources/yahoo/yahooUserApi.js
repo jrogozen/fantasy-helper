@@ -99,7 +99,10 @@ class YahooUserApi {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
     })
-      .then((response) => YahooUserApi.parseUserCollection(response.data));
+      .then((response) => YahooUserApi.parseUserCollection(response.data))
+      .catch((error) => {
+        throw yahooUtils.transformYahooResponseErrors(error);
+      });
   }
 
   teams({ gamesFilter, noLeagues = false }) {
@@ -118,7 +121,10 @@ class YahooUserApi {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
     })
-      .then((response) => YahooUserApi.parseUserCollection(response.data));
+      .then((response) => YahooUserApi.parseUserCollection(response.data))
+      .catch((error) => {
+        throw yahooUtils.transformYahooResponseErrors(error);
+      });
   }
 }
 

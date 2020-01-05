@@ -1,5 +1,5 @@
-// if no accessToken
+const yahooAuthMiddleware = require('./yahoo');
 
-// if no refreshToken
-
-// used tokens, but request was invalid
+module.exports = {
+  yahooAuthMiddleware,
+};

@@ -1,3 +1,6 @@
+const {
+  YahooInvalidTokenError,
+} = require('../errors');
 const log = require('../log');
 
 const logger = log.child({ name: 'api' });
@@ -57,6 +60,33 @@ function getRefreshTokenFromReq(req) {
   return null;
 }
 
+function getAccessTokenFromReq(req) {
+  logger.debug({
+    headerToken: req.headers.yahoo_access_token,
+    cookieToken: req.cookies.yahoo_access_token,
+    body: req.body,
+    queryToken: req.query.yahooAccessToken,
+  }, 'getting access token from request');
+
+  if (req.headers.yahoo_access_token) {
+    return req.headers.yahoo_access_token;
+  }
+
+  if (req.cookies.yahoo_access_token) {
+    return req.cookies.yahoo_access_token;
+  }
+
+  if (req.body.creds && req.body.creds.yahooAccessToken) {
+    return req.body.creds.yahooAccessToken;
+  }
+
+  if (req.query.yahooAccessToken) {
+    return req.query.yahooAccessToken;
+  }
+
+  return null;
+}
+
 function createGamesFilter(req) {
   let gamesFilter = '';
 
@@ -79,11 +109,25 @@ function createGamesFilter(req) {
   return gamesFilter;
 }
 
+function transformYahooResponseErrors(error) {
+  if (error.response
+    && error.response.data.error
+    && error.response.data.error.description
+    && error.response.data.error.description.indexOf('token_expired') > -1
+  ) {
+    throw new YahooInvalidTokenError('expred access_token');
+  }
+
+  throw error;
+}
+
 module.exports = {
   createGamesFilter,
   createBasicAuthorizationHeader,
   createBearerAuthorizationHeader,
+  getAccessTokenFromReq,
   getRefreshTokenFromReq,
   setResponseCookies,
+  transformYahooResponseErrors,
   urls,
 };
