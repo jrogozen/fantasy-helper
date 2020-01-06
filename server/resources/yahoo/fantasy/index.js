@@ -3,7 +3,7 @@ const YahooFantasyUserApi = require('./user');
 const yahooUtils = require('../../../utils/apis/yahoo');
 const log = require('../../../utils/log');
 
-const logger = log.child({ name: 'YahooFantasyApi' });
+const logger = log.child({ name: 'yahooApi' });
 
 /*
   games = sport (string) or sport + year (key). e.g. 'nfl' or '243'. nothing to do with the user

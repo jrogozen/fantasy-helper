@@ -1,6 +1,7 @@
 const express = require('express');
 
 const Database = require('../../database');
+const YahooAuthApi = require('../../resources/yahoo/auth');
 const YahooFantasyApi = require('../../resources/yahoo/fantasy');
 const yahooUtils = require('../../utils/apis/yahoo');
 const { yahooAuthMiddleware } = require('../../middleware/auth');
@@ -44,17 +45,22 @@ router.get('/info', (req, res, next) => {
           }));
         }
 
-        return user.getYahooAccessToken().then((creds) => {
-          yahooUtils.setResponseCookies({ user, accessToken: creds.accessToken, res });
+        return YahooAuthApi.getToken(req, res, yahooRefreshToken)
+          .then((creds) => {
+            yahooUtils.setResponseCookies({
+              refreshToken: creds.refreshToken,
+              accessToken: creds.accessToken,
+              res,
+            });
 
-          return res.status(200).send({
-            success: true,
-            data: {
-              user,
-              ...creds,
-            },
+            return res.status(200).send({
+              success: true,
+              data: {
+                user,
+                ...creds,
+              },
+            });
           });
-        });
       })
       .catch((error) => next(error));
   }
@@ -62,7 +68,6 @@ router.get('/info', (req, res, next) => {
   throw new ServerError('currently only support yahoo users', req, res);
 });
 
-// todo: add auth middleware!
 router.get('/leagues', yahooAuthMiddleware, (req, res, next) => {
   const yahooFantasyApi = new YahooFantasyApi({
     accessToken: req.cookies.yahoo_access_token,
@@ -81,7 +86,6 @@ router.get('/leagues', yahooAuthMiddleware, (req, res, next) => {
     .catch((error) => next(error));
 });
 
-// todo: add auth middleware!
 router.get('/teams', yahooAuthMiddleware, (req, res, next) => {
   const yahooFantasyApi = new YahooFantasyApi({
     accessToken: req.cookies.yahoo_access_token,

@@ -2,11 +2,12 @@ const axios = require('axios');
 const express = require('express');
 const querystring = require('querystring');
 
-const User = require('../database/models/user');
 const Database = require('../database');
 const yahooUtils = require('../utils/apis/yahoo');
 const log = require('../utils/log');
 const { ServerError } = require('../utils/errors');
+const YahooAuthApi = require('../resources/yahoo/auth');
+const YahooSocialApi = require('../resources/yahoo/social');
 
 const logger = log.child({ name: 'auth' });
 const router = express.Router();
@@ -19,53 +20,21 @@ router.get('/signin', (req, res) => {
     response_type: 'code',
   });
 
-  res.redirect(`${yahooUtils.urls.authorization}?${queryParams}`);
+  res.redirect(`${yahooUtils.urls.auth}/request_auth?${queryParams}`);
 });
 
 router.get('/handler', (req, res, next) => {
   logger.debug('requesting tokens from yahoo with code=%s', req.query.code);
 
-  axios({
-    method: 'post',
-    url: yahooUtils.urls.getToken,
-    headers: {
-      Authorization: yahooUtils.createBasicAuthorizationHeader(),
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    data: querystring.stringify({
-      grant_type: 'authorization_code',
-      redirect_uri: process.env.YAHOO_REDIRECT_URI,
-      code: req.query.code,
-    }),
-  })
-    .then(function parseGetToken(response) {
-      const { data } = response;
-      const {
-        access_token,
-        xoauth_yahoo_guid,
-        refresh_token,
-      } = data;
-
-      logger.debug({ xoauth_yahoo_guid, access_token, refresh_token }, 'cred response from yahoo');
-
-      if (!access_token || !xoauth_yahoo_guid || !refresh_token) {
-        throw new ServerError('failed to get token from yahoo', req, res, data);
-      }
-
-      return {
-        accessToken: access_token,
-        guid: xoauth_yahoo_guid,
-        refreshToken: refresh_token,
-      };
-    })
+  YahooAuthApi.getToken(req, res)
     .then(function getProfileInformation(creds) {
-      return axios({
-        method: 'get',
-        url: yahooUtils.urls.userInfo(creds.guid),
-        headers: {
-          Authorization: yahooUtils.createBearerAuthorizationHeader(creds.accessToken),
-        },
-      }).then((socialResponse) => ({ ...socialResponse, ...creds }));
+      const yahooSocialApi = new YahooSocialApi({
+        accessToken: creds.accessToken,
+        guid: creds.guid,
+      });
+
+      return yahooSocialApi.profile()
+        .then((response) => ({ ...response, ...creds }));
     })
     .then(function parseProfileInfo(response) {
       const {
@@ -93,11 +62,15 @@ router.get('/handler', (req, res, next) => {
         nickname,
         yahooGuid: guid,
         yahooRefreshToken: refreshToken,
-      }).then((user) => ({ user, creds: { accessToken } }));
+      }).then((user) => ({ user, creds: { accessToken, refreshToken } }));
     })
     .then(function returnAuthResponse({ user, creds }) {
       if (user) {
-        yahooUtils.setResponseCookies({ user, accessToken: creds.accessToken, res });
+        yahooUtils.setResponseCookies({
+          refreshToken: creds.refreshToken,
+          accessToken: creds.accessToken,
+          res,
+        });
 
         res.send({
           sucess: true,
@@ -121,11 +94,13 @@ router.get('/refresh', (req, res, next) => {
     throw new ServerError('missing refresh token', req, res);
   }
 
-  const user = new User({ yahooRefreshToken: refreshToken });
-
-  user.getYahooAccessToken()
+  YahooAuthApi.getToken(req, res, refreshToken)
     .then((creds) => {
-      yahooUtils.setResponseCookies({ user, accessToken: creds.accessToken, res });
+      yahooUtils.setResponseCookies({
+        refreshToken: creds.refreshToken,
+        accessToken: creds.accessToken,
+        res,
+      });
 
       if (!redirect) {
         return res.status(200).send({

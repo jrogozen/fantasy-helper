@@ -6,11 +6,8 @@ const log = require('../log');
 const logger = log.child({ name: 'api' });
 
 const urls = {
-  authorization: 'https://api.login.yahoo.com/oauth2/request_auth',
-  getToken: 'https://api.login.yahoo.com/oauth2/get_token',
-  userInfo(guid) {
-    return `https://social.yahooapis.com/v1/user/${guid}/profile?format=json`;
-  },
+  auth: 'https://api.login.yahoo.com/oauth2',
+  user: 'https://social.yahooapis.com/v1/user',
   fantasy: 'https://fantasysports.yahooapis.com/fantasy/v2',
 };
 
@@ -28,9 +25,9 @@ function createBearerAuthorizationHeader(token) {
   return `Bearer ${token}`;
 }
 
-function setResponseCookies({ user, accessToken, res }) {
+function setResponseCookies({ refreshToken, accessToken, res }) {
   res.cookie('yahoo_access_token', accessToken, { httpOnly: true });
-  res.cookie('yahoo_refresh_token', user.yahooRefreshToken, { httpOnly: true });
+  res.cookie('yahoo_refresh_token', refreshToken, { httpOnly: true });
 }
 
 function getRefreshTokenFromReq(req) {

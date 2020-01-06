@@ -6,7 +6,7 @@ const yahooUtils = require('../../../utils/apis/yahoo');
 // const logger = log.child({ name: 'yahooApi' });
 
 class YahooFantasyUserApi {
-  // pass in YahooApi class to get around circular dependency
+  // pass in YahooFantasyApi class to get around circular dependency
   constructor(accessToken, YahooFantasyApi) {
     this.accessToken = accessToken;
     this.YahooFantasyApi = YahooFantasyApi;
