@@ -84,6 +84,12 @@ class YahooFantasyUserApi {
     };
   }
 
+  /*
+    need games
+    can have leagues
+    can have teams
+    can have players
+  */
   leagues({ gamesFilter }) {
     const url = this.YahooFantasyApi.makeRequestUrl([
       { name: 'users', filter: 'use_login=1' },
